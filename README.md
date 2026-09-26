@@ -1,8 +1,28 @@
-# 🛡️ Sandbox Sentinel
+<h1 align="center">🛡️ Sandbox Sentinel</h1>
 
-> **Created by LalithPrabu** · ▶ [Demo video](#-watch-the-1-minute-demo) · 🧠 [AI model](#-which-ai-model-does-it-use) · ⚖️ [Pros & cons](#%EF%B8%8F-pros-and-cons) · 📘 [User guide](USAGE.md) · ✅ [Test report](TEST_REPORT.md) · 💬 [Support](#-support)
+<p align="center"><b>A zero-cost firewall and tamper-evident flight recorder for AI agent tool calls.</b><br>
+Screen every shell command, file write, HTTP call and fetched page <i>before</i> your agent runs it — and keep a log the agent can't quietly rewrite.</p>
 
-**A zero-cost firewall and tamper-evident flight recorder for AI agent tool calls.**
+<p align="center">
+  <a href="https://github.com/Lalithprabu/sandbox-sentinel/actions/workflows/ci.yml"><img src="https://github.com/Lalithprabu/sandbox-sentinel/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/tests-104%20passing-2ea44f" alt="tests">
+  <img src="https://img.shields.io/badge/coverage-95%25-2ea44f" alt="coverage">
+  <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776ab" alt="python">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="license"></a>
+  <img src="https://img.shields.io/badge/cost-%240%20%C2%B7%20offline-6f42c1" alt="cost">
+  <a href="https://github.com/Lalithprabu/sandbox-sentinel/issues"><img src="https://img.shields.io/badge/PRs-welcome-ff69b4" alt="PRs welcome"></a>
+</p>
+
+<p align="center">
+  ▶ <a href="#-watch-the-1-minute-demo">Demo video</a> ·
+  🧠 <a href="#-which-ai-model-does-it-use">AI model</a> ·
+  ⚖️ <a href="#%EF%B8%8F-pros-and-cons">Pros &amp; cons</a> ·
+  📘 <a href="USAGE.md">User guide</a> ·
+  ✅ <a href="TEST_REPORT.md">Test report</a> ·
+  💬 <a href="#-support">Support</a>
+</p>
+
+<p align="center"><sub>Created by <a href="https://github.com/Lalithprabu"><b>LalithPrabu</b></a> · if this helps you, please ⭐ the repo</sub></p>
 
 ## ▶ Watch the 1-minute demo
 

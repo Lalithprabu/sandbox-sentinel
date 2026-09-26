@@ -1,0 +1,17 @@
+name: 💡 Feature or rule request
+description: Suggest a detection rule or a feature
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: For a new detection rule, give an example command/URL/content it should catch and the decision you'd expect.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it useful?
+    validations:
+      required: false
