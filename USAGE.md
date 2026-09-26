@@ -27,6 +27,8 @@ AI agents increasingly act on their own: they run shell commands, write files, c
           audit log that shows if anyone edits it later
 ```
 
+**Which AI model?** The core decision-maker is a **rules engine with no AI model**. There's an optional second opinion from **Meta Llama 3.2 (3B)** running locally through **Ollama**. It's free, off by default, and can only escalate to REVIEW. Change it with `SENTINEL_OLLAMA_MODEL`. No cloud AI is called at runtime.
+
 **Who it's for:**
 - Developers building agents with LangChain, CrewAI, the Claude Agent SDK, the OpenAI Agents SDK, AutoGen, or their own loop
 - Teams running coding agents who want a safety net and an audit trail
