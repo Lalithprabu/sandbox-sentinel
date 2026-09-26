@@ -3,6 +3,7 @@
 Created by LalithPrabu.
 """
 
+from .advice import Advice, explain
 from .audit import AuditLog, VerifyResult
 from .engine import (
     ALLOW,
@@ -29,10 +30,10 @@ from .nl import Interpretation, PromptInterpreter, PromptResult, check_prompt, o
 from .redact import redact
 
 __all__ = [
-    "ALLOW", "BLOCK", "REVIEW", "Action", "ActionBlocked", "AuditLog", "CLOUD_PRESETS", "Finding",
+    "ALLOW", "BLOCK", "REVIEW", "Action", "ActionBlocked", "Advice", "AuditLog", "CLOUD_PRESETS", "Finding",
     "Interpretation", "LLMOpinion", "LLMReviewer", "OllamaProvider", "OllamaReviewer", "OpenAICompatProvider",
     "Policy", "PromptInterpreter", "PromptResult", "ReviewRequired", "Sentinel", "Verdict", "VerifyResult",
-    "check_prompt", "make_provider", "offline_actions", "redact",
+    "check_prompt", "explain", "make_provider", "offline_actions", "redact",
 ]
 __version__ = "0.2.0"
 __author__ = "LalithPrabu"

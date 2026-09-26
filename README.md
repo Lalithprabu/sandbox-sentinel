@@ -85,7 +85,7 @@ The incident replay in the demo is an illustrative reconstruction based on publi
 
 ## ✨ Features
 
-- **20 transparent regex rules** across 14 threat categories, including sandbox escape, log tampering, reverse shells, secret exfiltration, persistence, prompt injection, hidden text and agent backchannels
+- **21 transparent regex rules** across 14 threat categories, including sandbox escape, log tampering, reverse shells, secret exfiltration, persistence, prompt injection, hidden text and agent backchannels
 - **Policy checks**: workspace confinement for file operations, and a domain allowlist for HTTP
 - **Hash-chained audit log** that catches edits, deletions and reordering. Publish the `head_hash` somewhere the agent can't write to, and truncation is caught too.
 - **`@sentinel.guard(...)` decorator** that wraps any tool function in one line and works with any framework
@@ -100,10 +100,10 @@ git clone https://github.com/Lalithprabu/sandbox-sentinel.git
 cd sandbox-sentinel
 pip install -r requirements.txt
 streamlit run app.py          # demo UI → http://localhost:8501
-python run_tests.py           # 99 tests + HTML/JUnit/coverage reports in ./reports
+python run_tests.py           # 104 tests + HTML/JUnit/coverage reports in ./reports
 ```
 
-📋 **Latest results: 99/99 passing, 95% coverage.** See [TEST_REPORT.md](TEST_REPORT.md) and [reports/test-report.html](reports/test-report.html), or the **✅ Test report** tab in the demo.
+📋 **Latest results: 104/104 passing, 95% coverage.** See [TEST_REPORT.md](TEST_REPORT.md) and [reports/test-report.html](reports/test-report.html), or the **✅ Test report** tab in the demo.
 
 Optional free LLM second opinion:
 
@@ -127,6 +127,18 @@ Every input is an **action**: a `kind` (`shell`, `file_write`, `file_delete`, `h
 | **JSON stdin** | `echo '{"kind":"shell","target":"ls"}' \| python -m sentinel stdin` | Batch audits, non-Python agents |
 
 ➡️ Full walkthrough, configuration, integration recipes, and **pros and cons**: **[USAGE.md](USAGE.md)**
+
+## 🧭 Plain-English "why" + safer alternative
+
+Every verdict comes with a one-line explanation and, when something is blocked, a **safer way to do it** — offline, no AI needed:
+
+```text
+BLOCK — REMOTE_EXEC
+Why:   This action downloads and runs code in one step, so you can't inspect it first.
+Safer: Download the script to a file first, read it, verify its checksum, then run it deliberately.
+```
+
+Turn on a free AI model to also get a short, tailored explanation. See `sentinel.explain()`.
 
 ## 💬 Plain-English prompts (with example list)
 

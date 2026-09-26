@@ -171,6 +171,13 @@ code, pre, .mono{ font-family:'JetBrains Mono',ui-monospace,monospace !important
 .ecard{ background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--c); border-radius:12px; padding:11px 13px; }
 .ecard .tag{ font-size:.66rem; font-weight:800; letter-spacing:.06em; color:var(--c); }
 .ecard .q{ color:#cbd5e1; font-size:.85rem; margin-top:3px; }
+.advice{ margin-top:12px; padding:12px 14px; border-radius:12px; background:#0b0f18; border:1px solid var(--line); }
+.advice .why{ color:#e5e7eb; font-size:.9rem; }
+.advice .safer{ margin-top:8px; padding:9px 12px; border-radius:10px; background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.3); }
+.advice .safer b{ color:#86efac; font-size:.85rem; }
+.advice .safer ul{ margin:5px 0 0; padding-left:18px; }
+.advice .safer li{ margin:3px 0; color:#cbd5e1; font-size:.85rem; }
+.advice .ai-note{ margin-top:8px; padding:8px 11px; border-radius:10px; border:1px dashed #334155; color:#cbd5e1; font-size:.85rem; }
 section[data-testid="stSidebar"]{ background:#0c111b; border-right:1px solid var(--line); }
 </style>
 """
@@ -196,7 +203,7 @@ def kpis(items: list[tuple[str, str, str, str]]) -> str:
     return f'<div class="kpis">{cards}</div>'
 
 
-def verdict_card(v, model: str = "") -> str:
+def verdict_card(v, model: str = "", advice=None) -> str:
     c = DEC_COLOR[v.decision]
     n = len(v.findings)
     sub = "No risks detected, safe to execute." if not n else f"{n} finding{'s' if n > 1 else ''} · " + ", ".join(sorted({f.category.replace('_', ' ') for f in v.findings}))
@@ -209,12 +216,18 @@ def verdict_card(v, model: str = "") -> str:
     llm = ""
     if v.llm_risk is not None:
         llm = f'<div class="llm">🤖 <b>{esc(model)}</b> second opinion: risk <b>{v.llm_risk}</b>/100. {esc(v.llm_reason)}</div>'
+    adv = ""
+    if advice is not None:
+        tips = "".join(f'<li>{esc(t)}</li>' for t in advice.safer)
+        ai = f'<div class="ai-note">🤖 {esc(advice.ai_note)}</div>' if advice.ai_note else ""
+        safer = f'<div class="safer"><b>✅ Safer alternative</b><ul>{tips}</ul></div>' if tips else ""
+        adv = f'<div class="advice"><div class="why">{esc(advice.why)}</div>{safer}{ai}</div>'
     return f"""<div class="verdict" style="--c:{c}"><div class="vtop">
 <div class="vbadge">{DEC_ICON[v.decision]}</div>
 <div><div class="vtitle">{v.decision.upper()}</div><div class="vsub">{esc(sub)}</div></div>
 <div class="gauge"><div class="bar"><div class="fill" style="width:{max(v.score, 2)}%"></div></div>
 <div class="lab"><span>risk score</span><span><b style="color:{c}">{v.score}</b> / 100</span></div></div>
-</div>{rows}{llm}</div>"""
+</div>{rows}{llm}{adv}</div>"""
 
 
 def timeline_item(i: int, label: str, action, v) -> str:
@@ -293,3 +306,11 @@ def example_prompt_cards(examples) -> str:
         f'<div class="q">{esc(prompt)}</div></div>'
         for cat, prompt, dec in examples)
     return f'<div class="egrid">{cards}</div>'
+
+
+def advice_block(advice) -> str:
+    """Standalone advice panel (used under a prompt result)."""
+    tips = "".join(f'<li>{esc(t)}</li>' for t in advice.safer)
+    ai = f'<div class="ai-note">🤖 {esc(advice.ai_note)}</div>' if advice.ai_note else ""
+    safer = f'<div class="safer"><b>✅ Safer alternative</b><ul>{tips}</ul></div>' if tips else ""
+    return f'<div class="advice"><div class="why">{esc(advice.why)}</div>{safer}{ai}</div>'

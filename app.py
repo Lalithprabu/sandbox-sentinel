@@ -13,7 +13,8 @@ import streamlit as st
 
 import ui_theme as ui
 from sentinel import (
-    BLOCK, REVIEW, Action, AuditLog, LLMReviewer, OllamaProvider, Policy, Sentinel, check_prompt, make_provider,
+    BLOCK, REVIEW, Action, AuditLog, LLMReviewer, OllamaProvider, Policy, Sentinel, check_prompt, explain,
+    make_provider,
 )
 from sentinel.llm import CLOUD_PRESETS, DEFAULT_MODEL
 from sentinel.rules import ACTION_KINDS, RULES
@@ -207,6 +208,10 @@ with tab_check:
                 with st.spinner("Interpreting and checking…" + (" (first cloud/LLM call can be slow)" if ai_on else "")):
                     pr = check_prompt(sentinel, prompt_text, provider=provider if ai_on else None)
                 html(ui.prompt_result_card(pr))
+                worst = max(pr.results, key=lambda r: r[1].score, default=None)
+                if worst and worst[1].findings:
+                    adv = explain(worst[1], worst[0], provider=provider if ai_on else None)
+                    html(ui.advice_block(adv))
                 render_kpis()
             else:
                 html('<div class="panel muted" style="margin-top:14px;padding:34px 24px;text-align:center">'
@@ -224,8 +229,10 @@ with tab_check:
         with right:
             if go:
                 with st.spinner("Analysing…" + (" (first AI call can be slow)" if ai_on else "")):
-                    v = sentinel.check(kind, target, payload)
-                html(ui.verdict_card(v, ai_label if ai_on else ""))
+                    act = Action(kind, target, payload)
+                    v = sentinel.evaluate(act)
+                    adv = explain(v, act, provider=provider if ai_on else None)
+                html(ui.verdict_card(v, ai_label if ai_on else "", advice=adv))
                 render_kpis()
             else:
                 html('<div class="panel muted" style="margin-top:28px;padding:40px 24px;text-align:center">'

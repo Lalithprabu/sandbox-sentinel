@@ -4,9 +4,9 @@
 
 | | |
 |---|---|
-| **Result** | **PASS: 99 / 99** (0 failed, 0 skipped) |
+| **Result** | **PASS: 104 / 104** (0 failed, 0 skipped) |
 | **Run** | 2026-09-26 (v0.2.0), duration ~9 s |
-| **Line coverage** | **95%** (614 statements, 32 missed) |
+| **Line coverage** | **95%** (657 statements, 32 missed) |
 | **Environment** | Windows 11 · Python 3.10.0 · pytest 9.1.1 · Streamlit 1.64 · Ollama `llama3.2` (local) |
 | **Cost** | $0: no paid API calls |
 
@@ -40,6 +40,7 @@ Reproduce with `python run_tests.py`. The live-LLM test skips automatically if O
 | Secret redaction | 8 | AWS/API/GitHub/Groq keys, passwords, `user:pass@` URLs masked; clean text untouched |
 | AI providers | 5 | `make_provider` for all free presets; cloud needs a key; all presets are free with https key URLs; OpenAI-compatible parsing; loose-JSON parsing |
 | CLI prompt mode | 3 | `prompt` blocks danger, emits JSON, requires text |
+| Advice / safer alternatives | 5 | Offline "why" + safer tip per rule; ALLOW is reassuring; AI note added when a provider is present; cloud advice is redacted; **every rule has a safer alternative** |
 
 ## Coverage by module
 
