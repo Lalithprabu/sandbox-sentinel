@@ -1,0 +1,7 @@
+requests>=2.31
+streamlit>=1.45
+pytest>=8
+pytest-html>=4
+pytest-cov>=5
+# optional: re-record the walkthrough video
+# playwright>=1.45
