@@ -1,12 +1,12 @@
-# ✅ Test Report: Sandbox Sentinel v0.1.0
+# ✅ Test Report: Sandbox Sentinel v0.2.0
 
 > **Created by LalithPrabu** · 📘 [User guide](USAGE.md)
 
 | | |
 |---|---|
-| **Result** | **PASS: 58 / 58** (0 failed, 0 skipped) |
-| **Run** | 2026-09-26 04:43 (UTC+1), duration 8.1 s |
-| **Line coverage** | **97%** (349 statements, 12 missed) |
+| **Result** | **PASS: 99 / 99** (0 failed, 0 skipped) |
+| **Run** | 2026-09-26 (v0.2.0), duration ~9 s |
+| **Line coverage** | **95%** (614 statements, 32 missed) |
 | **Environment** | Windows 11 · Python 3.10.0 · pytest 9.1.1 · Streamlit 1.64 · Ollama `llama3.2` (local) |
 | **Cost** | $0: no paid API calls |
 
@@ -34,6 +34,12 @@ Reproduce with `python run_tests.py`. The live-LLM test skips automatically if O
 | CLI and JSON stdin | 6 | Exit codes 0/1/2/3/4, `--json` output, `verify` catches a tampered log. Stdin accepts a single object, an array and JSON Lines, returns the worst exit code for a batch, and rejects malformed input with exit 4 |
 | Input validation | 1 | Unknown action kinds are rejected |
 | Attribution | 1 | Package metadata credits LalithPrabu |
+| Plain-English prompts | 14 | The full example-prompt gallery reaches its expected decision using the **offline parser only** (no AI) |
+| Prompt parser | 6 | Extracts backticked commands, URLs (with send-intent), file deletes, quoted content; empty prompts fall back safely; multiple commands take the worst decision |
+| AI interpreter safety | 5 | AI can add actions but **cannot remove** what the parser found; concerns escalate to REVIEW only; failure falls back to offline; cloud providers receive redacted prompts |
+| Secret redaction | 8 | AWS/API/GitHub/Groq keys, passwords, `user:pass@` URLs masked; clean text untouched |
+| AI providers | 5 | `make_provider` for all free presets; cloud needs a key; all presets are free with https key URLs; OpenAI-compatible parsing; loose-JSON parsing |
+| CLI prompt mode | 3 | `prompt` blocks danger, emits JSON, requires text |
 
 ## Coverage by module
 

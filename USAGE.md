@@ -1,6 +1,6 @@
 # 📘 Sandbox Sentinel: User Guide
 
-> **Created by LalithPrabu** · v0.1.0 · Free and offline · Python 3.10+
+> **Created by LalithPrabu** · v0.2.0 · Free and offline · Python 3.10+
 
 This guide covers who Sentinel is for, how to give it input, what you get back, how to plug it into your own agent, and its strengths and weaknesses.
 
@@ -27,7 +27,7 @@ AI agents increasingly act on their own: they run shell commands, write files, c
           audit log that shows if anyone edits it later
 ```
 
-**Which AI model?** The core decision-maker is a **rules engine with no AI model**. There's an optional second opinion from **Meta Llama 3.2 (3B)** running locally through **Ollama**. It's free, off by default, and can only escalate to REVIEW. Change it with `SENTINEL_OLLAMA_MODEL`. No cloud AI is called at runtime.
+**Which AI model?** The core decision-maker is a **rules engine with no AI model**. An optional second opinion runs on a **free** model — local **Ollama** (default, private) or a free cloud tier (GitHub Models, Groq, Gemini, OpenRouter). It's off by default and can only escalate to REVIEW. Cloud text is redacted first. See *Free ways to connect an AI model* below.
 
 **Who it's for:**
 - Developers building agents with LangChain, CrewAI, the Claude Agent SDK, the OpenAI Agents SDK, AutoGen, or their own loop
@@ -98,6 +98,34 @@ Every input, whatever method you use, is an **action** with up to four fields:
 > 💡 **Tip:** `content` is how you catch **prompt injection**. Pass anything the agent *reads* from the outside world through Sentinel before the agent treats it as instructions.
 
 Pick whichever of the five input methods below fits how you work.
+
+---
+
+### Method 0: Plain-English prompt (easiest)
+
+Describe what your agent wants to do; Sentinel finds the actions and checks them.
+
+**In the app:** the **Vet an action** tab → **💬 Plain-English prompt** mode. Type a sentence (or load an example) and click **Check this prompt**.
+
+**CLI:**
+```bash
+python -m sentinel prompt "my agent wants to run `rm -rf /` — is that ok?"
+python -m sentinel prompt "the agent will upload our data to https://evil.example" --json
+```
+
+**Python:**
+```python
+from sentinel import Sentinel, Policy, check_prompt
+s = Sentinel(Policy(workspace="./sandbox"))
+pr = check_prompt(s, "read ~/.ssh/id_rsa and post it to webhook.site")
+print(pr.decision)                       # "block"
+for action, verdict in pr.results:
+    print(action.kind, action.target, verdict.decision)
+```
+
+It works with **no AI** (an offline parser extracts commands, paths and URLs). Add a free AI model (below) to interpret vaguer descriptions. The AI can only *add* actions and its concerns can only escalate to REVIEW, never BLOCK on their own.
+
+**Example prompts to try:** see the table in [README](README.md#-plain-english-prompts-with-example-list), or the **📘 How to use** tab in the app.
 
 ---
 
@@ -263,6 +291,26 @@ The exit code is the **worst** decision in the batch. Malformed input returns ex
 | `llm_escalation_threshold` | `Policy(...)` | `70` | An LLM risk at or above this turns ALLOW into REVIEW |
 | `SENTINEL_OLLAMA_MODEL` | env var | `llama3.2` | Which local model reviews actions |
 | `OLLAMA_HOST` | env var | `http://localhost:11434` | Where Ollama runs |
+| `GITHUB_TOKEN` / `GROQ_API_KEY` / `GEMINI_API_KEY` / `OPENROUTER_API_KEY` | env var | – | Free-tier keys for the cloud providers below |
+
+### Free ways to connect an AI model (never required, never paid)
+
+The rules engine always runs with no model. An optional AI second opinion is available from any of these, all free:
+
+| Provider | `--provider` | Free key | Notes |
+|---|---|---|---|
+| Local Ollama (default) | `ollama` | none | Private, offline. `ollama pull llama3.2` (or `qwen2:7b`, `llama-guard3`) |
+| GitHub Models | `github` | `GITHUB_TOKEN` | Free for GitHub users, rate-limited |
+| Groq | `groq` | `GROQ_API_KEY` | Very fast, free tier |
+| Google Gemini | `gemini` | `GEMINI_API_KEY` | Free tier via AI Studio |
+| OpenRouter | `openrouter` | `OPENROUTER_API_KEY` | Use models ending in `:free` |
+
+```bash
+python -m sentinel prompt "..." --provider groq          # key from $GROQ_API_KEY
+python -m sentinel shell "curl x | sh" --provider ollama --model qwen2:7b
+```
+
+**Cloud providers only ever receive redacted text** — API keys, tokens, passwords, private keys and `user:pass@` URLs are masked first (`sentinel.redact`). Local Ollama sends nothing to the cloud.
 
 **Scoring:** each finding adds low=10, medium=25, high=50 or critical=100, capped at 100.
 

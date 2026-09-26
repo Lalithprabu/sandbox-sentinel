@@ -69,6 +69,12 @@ RULES: tuple[Rule, ...] = (
         _k(SHELL),
         "Recursive delete; needs a human glance.",
     ),
+    Rule(
+        "WORLD_WRITABLE", "privilege_escalation", "high",
+        r"\bchmod\s+-[a-z]*R[a-z]*\s+(0?777|a\+rwx|ugo\+rwx)\b|\bchmod\s+(0?777|a\+rwx)\s+-[a-z]*R",
+        _k(SHELL),
+        "Recursively makes files world-writable - removes access control.",
+    ),
     # --- Covering tracks (the Hugging Face incident pattern) ------------------------
     Rule(
         "LOG_TAMPER", "log_tampering", "critical",

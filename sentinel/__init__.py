@@ -16,11 +16,23 @@ from .engine import (
     Sentinel,
     Verdict,
 )
-from .llm import OllamaReviewer
+from .llm import (
+    CLOUD_PRESETS,
+    LLMOpinion,
+    LLMReviewer,
+    OllamaProvider,
+    OllamaReviewer,
+    OpenAICompatProvider,
+    make_provider,
+)
+from .nl import Interpretation, PromptInterpreter, PromptResult, check_prompt, offline_actions
+from .redact import redact
 
 __all__ = [
-    "ALLOW", "BLOCK", "REVIEW", "Action", "ActionBlocked", "AuditLog", "Finding",
-    "OllamaReviewer", "Policy", "ReviewRequired", "Sentinel", "Verdict", "VerifyResult",
+    "ALLOW", "BLOCK", "REVIEW", "Action", "ActionBlocked", "AuditLog", "CLOUD_PRESETS", "Finding",
+    "Interpretation", "LLMOpinion", "LLMReviewer", "OllamaProvider", "OllamaReviewer", "OpenAICompatProvider",
+    "Policy", "PromptInterpreter", "PromptResult", "ReviewRequired", "Sentinel", "Verdict", "VerifyResult",
+    "check_prompt", "make_provider", "offline_actions", "redact",
 ]
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __author__ = "LalithPrabu"

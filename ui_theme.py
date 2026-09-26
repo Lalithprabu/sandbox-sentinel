@@ -147,6 +147,30 @@ code, pre, .mono{ font-family:'JetBrains Mono',ui-monospace,monospace !important
 .io .fdesc, .io .fev{ grid-column:1 / -1; }
 .steps{ margin:8px 0 10px; padding-left:20px; }
 .steps li{ margin:6px 0; color:#cbd5e1; font-size:.9rem; }
+.pverdict{ border:1px solid var(--line); border-left:5px solid var(--c); border-radius:16px; padding:16px 18px; margin-top:14px;
+  background:linear-gradient(90deg, color-mix(in srgb, var(--c) 12%, transparent), var(--panel) 45%); }
+.pverdict .top{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.pverdict .badge{ width:46px; height:46px; border-radius:12px; display:grid; place-items:center; font-size:1.4rem; font-weight:800;
+  background:color-mix(in srgb, var(--c) 18%, transparent); color:var(--c); border:1px solid color-mix(in srgb, var(--c) 45%, transparent); }
+.pverdict .title{ font-size:1.35rem; font-weight:800; color:var(--c); }
+.pverdict .sub{ color:var(--muted); font-size:.85rem; }
+.understood{ margin:10px 0 4px; padding:9px 12px; border-radius:10px; background:#0b0f18; border:1px solid var(--line);
+  color:#cbd5e1; font-size:.86rem; }
+.understood b{ color:var(--cyan); }
+.pact{ display:grid; grid-template-columns:auto auto 1fr; gap:6px 12px; align-items:center; padding:10px 12px; margin-top:8px;
+  border-radius:10px; background:var(--panel2); border:1px solid var(--line); }
+.pact .d{ font-size:.66rem; font-weight:800; text-transform:uppercase; padding:3px 8px; border-radius:6px; color:var(--c);
+  background:color-mix(in srgb, var(--c) 15%, transparent); border:1px solid color-mix(in srgb, var(--c) 40%, transparent); }
+.pact .kind{ font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted); }
+.pact .tgt{ font-family:'JetBrains Mono',monospace; font-size:.82rem; color:#93c5fd; word-break:break-word; }
+.pact .rules{ grid-column:1 / -1; display:flex; gap:6px; flex-wrap:wrap; }
+.pact .r{ font-family:'JetBrains Mono',monospace; font-size:.68rem; padding:2px 7px; border-radius:6px; background:#1e293b; color:#cbd5e1; }
+.concern{ margin-top:8px; padding:9px 12px; border-radius:10px; border:1px dashed #b45309; background:rgba(245,158,11,.06); color:#fcd34d; font-size:.84rem; }
+.pnote{ margin-top:8px; color:var(--muted); font-size:.82rem; }
+.egrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; margin-top:8px; }
+.ecard{ background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--c); border-radius:12px; padding:11px 13px; }
+.ecard .tag{ font-size:.66rem; font-weight:800; letter-spacing:.06em; color:var(--c); }
+.ecard .q{ color:#cbd5e1; font-size:.85rem; margin-top:3px; }
 section[data-testid="stSidebar"]{ background:#0c111b; border-right:1px solid var(--line); }
 </style>
 """
@@ -232,3 +256,40 @@ def compact(s: str) -> str:
 
 
 CSS = compact(CSS)
+
+
+DEC_ICON_BADGE = {"allow": "✓", "review": "!", "block": "✕"}
+
+
+def prompt_result_card(pr) -> str:
+    """Render a nl.PromptResult: overall decision, how it was understood, each action, concerns, notes."""
+    c = DEC_COLOR[pr.decision]
+    src = {"rules": "offline parser", "ai": "AI interpreter", "ai+rules": "AI + offline parser"}.get(
+        pr.interpretation.source, pr.interpretation.source)
+    understood = (f'<div class="understood">Understood as <b>{esc(pr.interpretation.summary)}</b></div>'
+                  if pr.interpretation.summary else "")
+    rows = ""
+    for a, v in pr.results:
+        cc = DEC_COLOR[v.decision]
+        rules = "".join(f'<span class="r">{esc(f.rule_id)}</span>' for f in v.findings)
+        rows += (f'<div class="pact" style="--c:{cc}"><span class="d">{v.decision}</span>'
+                 f'<span class="kind">{esc(a.kind)}</span><span class="tgt">{esc(a.target[:160])}</span>'
+                 f'{f"<div class=rules>{rules}</div>" if rules else ""}</div>')
+    concerns = "".join(
+        f'<div class="concern">⚠ AI concern: <b>{esc(c2.category)}</b> (risk {c2.risk}) — {esc(c2.reason)}</div>'
+        for c2 in pr.interpretation.concerns)
+    notes = "".join(f'<div class="pnote">ℹ {esc(n)}</div>' for n in pr.interpretation.notes)
+    n = len(pr.results)
+    sub = f"{n} action{'s' if n != 1 else ''} checked via {esc(src)}"
+    return (f'<div class="pverdict" style="--c:{c}"><div class="top">'
+            f'<div class="badge">{DEC_ICON_BADGE[pr.decision]}</div>'
+            f'<div><div class="title">{pr.decision.upper()}</div><div class="sub">{sub} · worst score {pr.score}</div></div>'
+            f'</div>{understood}{rows}{concerns}{notes}</div>')
+
+
+def example_prompt_cards(examples) -> str:
+    cards = "".join(
+        f'<div class="ecard" style="--c:{DEC_COLOR[dec]}"><div class="tag">{esc(cat.upper())} → {dec.upper()}</div>'
+        f'<div class="q">{esc(prompt)}</div></div>'
+        for cat, prompt, dec in examples)
+    return f'<div class="egrid">{cards}</div>'
