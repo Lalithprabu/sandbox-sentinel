@@ -48,7 +48,7 @@ No API keys, no cloud and no cost. You can optionally add a second opinion from 
 
 | Layer | What it is | Needed? | Cost |
 |---|---|---|---|
-| **1. Rules engine** (the core) | **No AI model.** 20 transparent regex rules plus policy checks (workspace, domain allowlist). This layer makes every BLOCK decision. | ✅ Always on | $0 |
+| **1. Rules engine** (the core) | **No AI model.** 21 transparent regex rules plus policy checks (workspace, domain allowlist). This layer makes every BLOCK decision. | ✅ Always on | $0 |
 | **2. AI reviewer** (optional) | A second opinion that reads each action the rules would allow and returns a 0–100 risk score. It can only escalate ALLOW → REVIEW and **never blocks on its own**, so a model's false positive costs a glance, not a broken agent. | ❌ Off by default | **$0** on every option below |
 
 ### Free ways to connect an AI model

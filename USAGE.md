@@ -15,7 +15,7 @@ AI agents increasingly act on their own: they run shell commands, write files, c
                          │
                          ▼
                ┌───────────────────┐
-               │  Sandbox Sentinel │  20 rules + your policy (+ optional local LLM)
+               │  Sandbox Sentinel │  21 rules + your policy (+ optional local LLM)
                └─────────┬─────────┘
           ┌──────────────┼──────────────┐
           ▼              ▼              ▼
